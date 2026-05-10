@@ -22,9 +22,16 @@ const navItems = [
   { id: "contact", label: "Contact" }
 ];
 
+/** Scroll animations: avoid opacity:0 on mobile where IntersectionObserver can miss first paint */
 const sectionMotion = {
-  hidden: { opacity: 0, y: 24 },
+  hidden: { opacity: 1, y: 16 },
   show: { opacity: 1, y: 0 }
+};
+
+const scrollViewport = {
+  once: true,
+  amount: "some" as const,
+  margin: "0px 0px 120px 0px"
 };
 
 function ContactCard({
@@ -72,7 +79,7 @@ function ContactCard({
       </span>
       <span className="min-w-0">
         <span className="block text-xs uppercase tracking-wider text-slate-400">{label}</span>
-        <span className="mt-1 block truncate text-sm font-medium text-white group-hover:text-cyan-100">{value}</span>
+        <span className="mt-1 block break-words text-sm font-medium text-white group-hover:text-cyan-100 sm:truncate sm:break-normal">{value}</span>
       </span>
     </motion.a>
   );
@@ -81,14 +88,14 @@ function ContactCard({
 function PAIBlock({ title, text }: { title: "Problem" | "Approach" | "Impact"; text: string }) {
   const icon = title === "Problem" ? "P" : title === "Approach" ? "A" : "I";
   return (
-    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+    <div className="min-w-0 rounded-xl border border-white/10 bg-white/[0.03] p-4">
       <p className="flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-cyan-200">
-        <span className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-cyan-200/30 bg-cyan-300/10 text-[10px]">
+        <span className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-cyan-200/30 bg-cyan-300/10 text-[10px]">
           {icon}
         </span>
         {title}
       </p>
-      <p className="mt-3 text-sm leading-relaxed text-slate-300">{text}</p>
+      <p className="mt-3 break-words text-sm leading-relaxed text-slate-300">{text}</p>
     </div>
   );
 }
@@ -97,14 +104,14 @@ export default function Portfolio() {
   const { scrollYProgress } = useScroll();
 
   return (
-    <main className="relative overflow-x-hidden">
+    <main className="relative min-w-0 overflow-x-clip">
       <div className="pointer-events-none absolute left-[-140px] top-[180px] h-[360px] w-[360px] rounded-full bg-indigo-500/20 blur-[120px]" />
       <div className="pointer-events-none absolute right-[-100px] top-[520px] h-[300px] w-[300px] rounded-full bg-cyan-400/15 blur-[110px]" />
 
       <motion.div className="fixed left-0 top-0 z-[60] h-1 w-full origin-left bg-gradient-to-r from-indigo-400 via-cyan-300 to-purple-400" style={{ scaleX: scrollYProgress }} />
 
       <header className="fixed left-0 top-0 z-50 w-full border-b border-white/10 bg-[#090b14]/70 backdrop-blur-xl">
-        <nav className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-6 md:px-8">
+        <nav className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4 sm:px-6 md:px-8">
           <a href="#hero" className="text-sm font-semibold tracking-wide text-white">Manthan Srivastav</a>
           <ul className="hidden gap-5 md:flex">
             {navItems.map((item) => (
@@ -116,14 +123,14 @@ export default function Portfolio() {
         </nav>
       </header>
 
-      <Section id="hero" className="min-h-screen pt-32">
+      <Section id="hero" className="min-h-[100dvh] min-h-screen pt-28 sm:pt-32">
         <motion.div initial="hidden" animate="show" variants={sectionMotion} transition={{ duration: 0.6 }}>
-          <GlassCard className="premium-card relative overflow-hidden p-8 shadow-glow md:p-12">
+          <GlassCard className="premium-card relative overflow-x-clip p-6 shadow-glow sm:p-8 md:p-12">
             <div className="pointer-events-none absolute right-[-80px] top-[-80px] h-52 w-52 rounded-full bg-indigo-400/20 blur-[90px]" />
             <div className="pointer-events-none absolute bottom-[-80px] left-[-80px] h-48 w-48 rounded-full bg-cyan-300/20 blur-[90px]" />
 
             <p className="mb-4 text-sm uppercase tracking-[0.24em] text-cyan-200">Product Operator Portfolio</p>
-            <h1 className="max-w-5xl text-5xl font-bold leading-[1.05] text-white md:text-7xl">
+            <h1 className="max-w-5xl break-words text-3xl font-bold leading-[1.08] text-white sm:text-4xl md:text-6xl lg:text-7xl">
               Building Scalable Product Experiences with{" "}
               <span className="gradient-text-animated">Growth, AI & Monetization</span>
             </h1>
@@ -159,69 +166,69 @@ export default function Portfolio() {
       </Section>
 
       <Section id="about" className="pt-8">
-        <motion.div initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.25 }} variants={sectionMotion} transition={{ duration: 0.55 }}>
-          <GlassCard className="p-8 md:p-10">
-          <h2 className="text-3xl font-semibold text-white">About</h2>
-          <p className="mt-5 text-slate-300">Currently functioning as a Technical Product Manager with experience across Kuku and Tata Play, focused on monetization, retention, engagement systems, experimentation, and AI automation. Works closely with engineering, business, growth, and analytics teams to execute high-impact product outcomes.</p>
+        <motion.div initial="hidden" whileInView="show" viewport={scrollViewport} variants={sectionMotion} transition={{ duration: 0.55 }}>
+          <GlassCard className="p-5 sm:p-8 md:p-10">
+          <h2 className="text-2xl font-semibold text-white sm:text-3xl">About</h2>
+          <p className="mt-5 break-words text-slate-300">Currently functioning as a Technical Product Manager with experience across Kuku and Tata Play, focused on monetization, retention, engagement systems, experimentation, and AI automation. Works closely with engineering, business, growth, and analytics teams to execute high-impact product outcomes.</p>
           </GlassCard>
         </motion.div>
       </Section>
 
       <Section id="philosophy" className="pt-8">
-        <motion.h2 initial="hidden" whileInView="show" viewport={{ once: true }} variants={sectionMotion} className="mb-8 text-3xl font-semibold text-white">
+        <motion.h2 initial="hidden" whileInView="show" viewport={scrollViewport} variants={sectionMotion} className="mb-6 break-words text-2xl font-semibold text-white sm:mb-8 sm:text-3xl">
           Product Philosophy
         </motion.h2>
-        <div className="grid gap-5 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
           {productPhilosophy.map((item) => (
-            <motion.div key={item.title} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="premium-card hover-lift glass rounded-2xl p-6">
+            <motion.div key={item.title} initial={{ opacity: 1, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={scrollViewport} className="premium-card hover-lift glass min-w-0 rounded-2xl p-5 sm:p-6">
               <p className="text-lg font-medium text-white">{item.title}</p>
-              <p className="mt-3 text-sm leading-relaxed text-slate-300">{item.text}</p>
+              <p className="mt-3 break-words text-sm leading-relaxed text-slate-300">{item.text}</p>
             </motion.div>
           ))}
         </div>
       </Section>
 
       <Section id="impact-stories" className="pt-8">
-        <motion.h2 initial="hidden" whileInView="show" viewport={{ once: true }} variants={sectionMotion} className="mb-2 text-3xl font-semibold text-white">
+        <motion.h2 initial="hidden" whileInView="show" viewport={scrollViewport} variants={sectionMotion} className="mb-2 break-words text-2xl font-semibold text-white sm:text-3xl">
           Impact Stories
         </motion.h2>
-        <p className="mb-10 max-w-3xl text-slate-300">
+        <p className="mb-8 max-w-3xl break-words text-slate-300 sm:mb-10">
           Case-study narratives across monetization, platform systems, engagement, personalization,
           and product execution outcomes.
         </p>
-        <div className="space-y-8">
+        <div className="space-y-6 sm:space-y-8">
           {impactStoryGroups.map((group, groupIndex) => (
             <motion.section
               key={group.company}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 1, y: 14 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.5, delay: groupIndex * 0.06 }}
-              className="premium-card glass rounded-3xl p-6 md:p-8"
+              viewport={scrollViewport}
+              transition={{ duration: 0.45, delay: groupIndex * 0.04 }}
+              className="premium-card glass min-w-0 rounded-3xl p-4 sm:p-6 md:p-8"
             >
-              <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-                <p className="rounded-full border border-white/15 bg-white/[0.04] px-3 py-1 text-xs uppercase tracking-wider text-slate-200">
+              <div className="mb-5 flex flex-col gap-2 sm:mb-6 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-3">
+                <p className="break-words rounded-full border border-white/15 bg-white/[0.04] px-3 py-1 text-[11px] uppercase tracking-wider text-slate-200 sm:text-xs">
                   {group.company}
                 </p>
-                <p className="text-xs uppercase tracking-widest text-slate-400">{group.duration}</p>
+                <p className="shrink-0 text-[11px] uppercase tracking-widest text-slate-400 sm:text-xs">{group.duration}</p>
               </div>
-              <div className="space-y-6">
+              <div className="space-y-5 sm:space-y-6">
                 {group.stories.map((story) => (
-                  <article key={story.title} className="premium-card hover-lift rounded-2xl border border-white/10 bg-[#0e1324]/70 p-5 md:p-6">
-                    <p className="mb-3 inline-flex rounded-full border border-white/15 bg-white/[0.04] px-3 py-1 text-[11px] uppercase tracking-widest text-cyan-100">
+                  <article key={story.title} className="premium-card hover-lift min-w-0 rounded-2xl border border-white/10 bg-[#0e1324]/70 p-4 sm:p-5 md:p-6">
+                    <p className="mb-3 inline-flex max-w-full break-words rounded-full border border-white/15 bg-white/[0.04] px-3 py-1 text-[10px] uppercase tracking-widest text-cyan-100 sm:text-[11px]">
                       {group.company}
                     </p>
-                    <h3 className="text-xl font-semibold text-white md:text-2xl">{story.title}</h3>
-                    <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                    <h3 className="break-words text-lg font-semibold text-white sm:text-xl md:text-2xl">{story.title}</h3>
+                    <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
                       {story.metrics.map((metric) => (
-                        <div key={`${story.title}-${metric.label}`} className="glass rounded-2xl p-4">
-                          <p className="text-2xl font-semibold text-white md:text-3xl">{metric.metric}</p>
-                          <p className="mt-2 text-xs uppercase tracking-wider text-slate-300">{metric.label}</p>
+                        <div key={`${story.title}-${metric.label}`} className="glass min-w-0 rounded-2xl p-4">
+                          <p className="break-words text-xl font-semibold text-white sm:text-2xl md:text-3xl">{metric.metric}</p>
+                          <p className="mt-2 break-words text-xs uppercase tracking-wider text-slate-300">{metric.label}</p>
                         </div>
                       ))}
                     </div>
                     <div className="my-5 h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-                    <div className="grid gap-4 md:grid-cols-3">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                       <PAIBlock title="Problem" text={story.problem} />
                       <PAIBlock title="Approach" text={story.approach} />
                       <PAIBlock title="Impact" text={story.impact.join(" ")} />
@@ -235,28 +242,28 @@ export default function Portfolio() {
       </Section>
 
       <Section id="selected-work" className="pt-8">
-        <motion.h2 initial="hidden" whileInView="show" viewport={{ once: true }} variants={sectionMotion} className="mb-8 text-3xl font-semibold text-white">
+        <motion.h2 initial="hidden" whileInView="show" viewport={scrollViewport} variants={sectionMotion} className="mb-6 break-words text-2xl font-semibold text-white sm:mb-8 sm:text-3xl">
           Selected Product Work
         </motion.h2>
-        <div className="grid gap-5 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
           {selectedProductWork.map((work) => (
-            <motion.article key={work.title} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="premium-card hover-lift glass rounded-2xl p-6">
-              <h3 className="text-xl font-medium text-white">{work.title}</h3>
-              <p className="mt-3 text-sm leading-relaxed text-slate-300">{work.text}</p>
+            <motion.article key={work.title} initial={{ opacity: 1, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={scrollViewport} className="premium-card hover-lift glass min-w-0 rounded-2xl p-5 sm:p-6">
+              <h3 className="text-lg font-medium text-white sm:text-xl">{work.title}</h3>
+              <p className="mt-3 break-words text-sm leading-relaxed text-slate-300">{work.text}</p>
             </motion.article>
           ))}
         </div>
       </Section>
 
       <Section id="skills" className="pt-8">
-        <motion.h2 initial="hidden" whileInView="show" viewport={{ once: true }} variants={sectionMotion} className="mb-8 text-3xl font-semibold text-white">Skills</motion.h2>
-        <div className="grid gap-6 md:grid-cols-2">
+        <motion.h2 initial="hidden" whileInView="show" viewport={scrollViewport} variants={sectionMotion} className="mb-6 break-words text-2xl font-semibold text-white sm:mb-8 sm:text-3xl">Skills</motion.h2>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {Object.entries(skills).map(([category, categorySkills]) => (
-            <motion.div key={category} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="glass rounded-2xl p-6">
+            <motion.div key={category} initial={{ opacity: 1, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={scrollViewport} className="glass min-w-0 rounded-2xl p-5 sm:p-6">
               <h3 className="mb-4 text-lg font-medium text-white">{category}</h3>
               <div className="flex flex-wrap gap-2">
                 {categorySkills.map((skill, i) => (
-                  <motion.span key={skill} initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.04 }} className="rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs text-slate-200 hover:animate-float hover:border-indigo-300/60">{skill}</motion.span>
+                  <motion.span key={skill} initial={{ opacity: 1, scale: 1 }} whileInView={{ opacity: 1, scale: 1 }} viewport={scrollViewport} transition={{ delay: i * 0.02 }} className="rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-xs text-slate-200 hover:animate-float hover:border-indigo-300/60">{skill}</motion.span>
                 ))}
               </div>
             </motion.div>
@@ -265,34 +272,34 @@ export default function Portfolio() {
       </Section>
 
       <Section id="certifications" className="pt-8">
-        <motion.h2 initial="hidden" whileInView="show" viewport={{ once: true }} variants={sectionMotion} className="mb-8 text-3xl font-semibold text-white">Certifications</motion.h2>
-        <div className="grid gap-4 md:grid-cols-2">
+        <motion.h2 initial="hidden" whileInView="show" viewport={scrollViewport} variants={sectionMotion} className="mb-6 break-words text-2xl font-semibold text-white sm:mb-8 sm:text-3xl">Certifications</motion.h2>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {certifications.map((cert) => (
             <motion.article
               key={cert.title}
-              initial={{ opacity: 0, y: 12 }}
+              initial={{ opacity: 1, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="premium-card hover-lift glass overflow-hidden rounded-2xl"
+              viewport={scrollViewport}
+              className="premium-card hover-lift glass min-w-0 overflow-x-clip rounded-2xl"
             >
               {cert.previewImage ? (
-                <a href={cert.fileUrl} target="_blank" rel="noreferrer" className="block">
+                <a href={cert.fileUrl} target="_blank" rel="noreferrer" className="block max-w-full">
                   <img
                     src={cert.previewImage}
                     alt={cert.title}
-                    className={`h-44 w-full ${
+                    className={`max-h-48 min-h-0 w-full max-w-full ${
                       cert.previewFit === "contain" ? "bg-white object-contain p-2" : "object-cover object-top"
                     }`}
                   />
                 </a>
               ) : (
-                <div className="flex h-44 items-center justify-center border-b border-white/10 bg-gradient-to-br from-indigo-500/15 to-cyan-400/10">
-                  <p className="text-sm uppercase tracking-[0.2em] text-slate-300">Certificate Document</p>
+                <div className="flex min-h-[11rem] items-center justify-center border-b border-white/10 bg-gradient-to-br from-indigo-500/15 to-cyan-400/10 px-4 py-8">
+                  <p className="break-words text-center text-xs uppercase tracking-[0.2em] text-slate-300 sm:text-sm">Certificate Document</p>
                 </div>
               )}
-              <div className="space-y-3 p-5">
-                <p className="text-lg font-semibold text-white">{cert.title}</p>
-                <p className="text-sm text-slate-300">{cert.issuer}</p>
+              <div className="space-y-3 p-4 sm:p-5">
+                <p className="break-words text-lg font-semibold text-white">{cert.title}</p>
+                <p className="break-words text-sm text-slate-300">{cert.issuer}</p>
                 {(cert.issueDate || cert.expiryDate) && (
                   <p className="text-xs text-slate-400">
                     {cert.issueDate ? `Issued: ${cert.issueDate}` : ""}
@@ -334,11 +341,11 @@ export default function Portfolio() {
       </Section>
 
       <Section id="contact" className="pt-8">
-        <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={sectionMotion}>
-          <GlassCard className="p-8 md:p-10">
-          <h2 className="text-3xl font-semibold text-white">Contact</h2>
-          <p className="mt-4 text-slate-300">Let&apos;s build scalable product experiences together.</p>
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
+        <motion.div initial="hidden" whileInView="show" viewport={scrollViewport} variants={sectionMotion}>
+          <GlassCard className="p-5 sm:p-8 md:p-10">
+          <h2 className="text-2xl font-semibold text-white sm:text-3xl">Contact</h2>
+          <p className="mt-4 break-words text-slate-300">Let&apos;s build scalable product experiences together.</p>
+          <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
             <ContactCard href={`mailto:${contact.email}`} label="Email" value={contact.email} icon="email" />
             <ContactCard href="tel:+917042618954" label="Phone" value={contact.phone} icon="phone" />
             <ContactCard href={contact.linkedin} label="LinkedIn" value="LinkedIn" icon="linkedin" external />
